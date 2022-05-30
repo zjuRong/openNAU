@@ -1,0 +1,285 @@
+---
+title: "Process 2"
+date: "`r Sys.time()`"
+output:
+  bookdown::html_document2:
+    toc: yes
+    toc_float: true
+    number_sections: true
+    fig_width: 10
+    fig_height: 7
+    fig_caption: true
+    theme: spacelab
+    highlight: pygments
+---
+
+```{r echo=FALSE,warning=FALSE, message=FALSE}
+library(ggrepel)
+library(ggplot2)
+library(gridExtra)
+library(venn)
+library(ggpolypath)
+library(clusterProfiler)
+```
+
+```{r echo=FALSE, warning=FALSE}
+ff <- getwd()
+id <- unlist(strsplit(ff, "/", fixed = TRUE))
+id <- id[length(id)]
+```
+
+<b>Job ID:</b> `r id`
+
+<br><br><br><br>
+# Differential metabolites analysis
+In this section, we use the wilcox rank test and OPLS-DA to analyze the mass intensity. All differential peaks conform to the threshold  {FDR<0.05 and FC (FC>2 or FC<0.5)} and VIP>1
+
+
+## Differential nalysis by wilcox rank test
+
+```{r  echo=FALSE, fig.align='center', warning=FALSE,split=TRUE, fig.height=7,fig.width=10}
+file <- list.files()
+dd <- grep("wilcox_all_2.csv", file, fixed = TRUE)
+file_wilcox <- file[dd]
+pi <- 1
+gplot <- list()
+for (f in file_wilcox)
+{
+  data <- read.csv(file = f)
+  data <- data.frame(data)
+  nn <- unlist(strsplit(f, "++", fixed = TRUE))
+  ggr <- nn[1]
+  data$logFC <- log2(abs(as.numeric(data[, 2])))
+  data$lgFDR <- -log10(abs(data[, 4]))
+  data$status <- rep("unchange", length(data$lgFDR))
+  thres1 <- which(as.numeric(data[, "FDR"]) < 0.05)
+  thres2 <- which(abs(as.numeric(data[, "FC"])) > 2 | abs(as.numeric(data[, "FC"])) < 0.5)
+  thres <- intersect(thres1, thres2)
+  data$status[thres] <- "change"
+  p <- ggplot(data, aes(logFC, lgFDR)) +
+    geom_point(aes(color = status), size = 1) +
+
+    # geom_jitter(aes(color = significant),alpha=0.4)+
+
+    # 点添加标签
+    geom_text_repel(aes(logFC, lgFDR, label = ifelse((status == "change"), as.character(ID), ""), color = status),
+      size = 3, show.legend
+      = TRUE
+    ) +
+    # 坐标轴名称
+    labs(x = expression(log[2](FC)), y = expression(-log[10](FDR)), title = ggr) +
+    # log10(0.5)~1.3
+    geom_hline(yintercept = 1.3, linetype = 4) +
+    # log2(2)=1,log2(0.5)=-1
+    geom_vline(xintercept = c(-1, 1), linetype = 4) +
+    ylim(min(data$lgFDR), max(data$lgFDR))
+
+  gplot[[pi]] <- p
+  pi <- pi + 1
+}
+names(gplot) <- paste0("p", c(1:length(gplot)))
+spn <- ceiling(length(gplot) / 2)
+plot_grid(plotlist = gplot, nrow = spn, labels = "AUTO")
+```
+
+
+## Analysis by OPLS-DA
+
+```{r echo=FALSE, fig.align='center', warning=FALSE,split=TRUE, fig.height=7,fig.width=10}
+file <- list.files()
+
+dd <- grep("oplsda_data_2.csv", file, fixed = TRUE)
+if (length(dd) == 0) {
+  errm <- "*************Error : No model was built because the predictive component was not significant*************."
+} else {
+  errm <- ""
+  file_popls <- file[dd]
+  pi <- 1
+  gplot <- list()
+  for (f in file_popls)
+  {
+    data <- read.csv(file = f)
+    nn <- unlist(strsplit(f, "++", fixed = TRUE))
+    ggr <- nn[1]
+    summary <- read.csv(paste0(ggr, "++oplsda_summary_2.csv"))
+    g <- ggplot(data = data, (aes(x, y, fill = group, colour = group))) +
+      geom_point(size = 2) +
+      theme_bw() +
+      guides(colour = guide_legend(override.aes = list(size = 2))) +
+      stat_ellipse(geom = "polygon", alpha = 0.2) +
+      labs(x = "O1", y = "P1", title = ggr) +
+      theme(legend.position = "right") +
+      annotation_custom(grob = tableGrob(summary, rows = NULL))
+    gplot[[pi]] <- g
+    pi <- pi + 1
+  }
+  names(gplot) <- paste0("p", c(1:length(gplot)))
+  spn <- ceiling(length(gplot) / 2)
+  plot_grid(plotlist = gplot, nrow = spn, labels = "AUTO")
+}
+```
+
+
+<b>`r errm`</b>
+
+
+# The differrntial metabolites Venn diagram
+
+```{r echo=FALSE, fig.align='center', warning=FALSE,split=TRUE, fig.height=7,fig.width=10}
+file <- list.files()
+
+dd <- grep("VIP_mean_2.csv", file, fixed = TRUE)
+if (length(dd) == 0) {
+  errm <- "*************Error : No Data for VIP>1*************"
+} else {
+  errm <- ""
+  file_popls <- file[dd]
+  pi <- 1
+  gplot <- list()
+  for (f in file_popls)
+  {
+    data <- read.csv(file = f)
+    nn <- unlist(strsplit(f, "++", fixed = TRUE))
+    ggr <- nn[1]
+    wilcox <- read.csv(paste0(ggr, "++wilcox_mean_2.csv"))
+    wilcox <- as.character(wilcox[, 1])
+    oplsda <- as.character(data[, 1])
+    da <- list(wilcox = wilcox, oplsda = oplsda)
+    g <- venn(da, zcolor = "style", borders = FALSE, ggplot = TRUE, par = FALSE)
+    g <- g + annotate("text", x = 270, y = 34, label = ggr)
+    gplot[[pi]] <- g
+    pi <- pi + 1
+  }
+  names(gplot) <- paste0("p", c(1:length(gplot)))
+  spn <- ceiling(length(gplot) / 2)
+  plot_grid(plotlist = gplot, nrow = spn, labels = "AUTO")
+}
+```
+
+<b>`r errm`</b>
+
+
+# THe metabolites matching in public database
+
+
+## The information for differential metabolites
+```{r echo=FALSE}
+file <- list.files()
+
+dd <- grep("DMC_wilcox_opls_mean_2.csv", file, fixed = TRUE)
+if (length(dd) > 0) {
+  peaks_mean <- read.csv("DMC_wilcox_opls_mean_2.csv", header = TRUE)
+  kable(peaks_mean[, 1:5])
+}
+```
+
+
+## The identification of differential metabolites
+This section uses the refMet of our database,including AIICCs, MassBank, KEGG, ChEBI, HMDB and NPAtlas, to identify the differential metabolites.
+```{r echo=FALSE,fig.align='center', warning=FALSE,split=TRUE, message=FALSE, fig.height=7,fig.width=10}
+
+file <- list.files()
+
+dd <- grep("DMC_wilcox_opls_mean_identify_2.csv", file, fixed = TRUE)
+if (length(dd) > 0) {
+  errm <- ""
+  peaks_mean <- read.csv("DMC_wilcox_opls_mean_identify_2.csv", header = TRUE)
+  res <- peaks_mean %>%
+    group_by(extend.DB) %>%
+    summarise(n = length(unique(CID)))
+  res <- data.frame(res)
+  ggplot(data = res, aes(x = extend.DB, y = n, fill = extend.DB), fill = extend.DB) +
+    geom_bar(stat = "identity") +
+    geom_text(mapping = aes(x = extend.DB, y = n, label = n), size = 3) +
+    theme(legend.position = "none") +
+    coord_flip()
+} else {
+  errm <- "*************No data for our results !***********"
+}
+```
+<a href="DMC_wilcox_opls_mean_identify_2.csv">Download data of all database</a>
+
+
+<b>`r errm`</b>
+
+## The related pathways of differential metabolites
+```{r echo=FALSE,fig.align='center', warning=FALSE,split=TRUE, message=FALSE, fig.height=7,fig.width=10}
+wpgmtfile <- "../../refMet/hmdb_compound_pathway.gmt"
+wp2gene <- read.gmt(wpgmtfile)
+colnames(wp2gene) <- c("PID", "gene")
+pathway <- read.csv("../../refMet/human_pathway_pathbank.csv")
+pathway <- data.frame(pathway[, c(1, 2)])
+colnames(pathway) <- c("PID", "name")
+genelist <- read.csv("DMC_wilcox_opls_mean_identify_2.csv")
+group <- as.character(genelist[, 2])
+ugg <- unique(group)
+m <- length(ugg)
+errm <- rep("", m)
+names(errm) <- ugg
+gplot <- list()
+for (i in 1:m) {
+  sg <- which(group == ugg[i])
+  gene <- as.character(genelist[sg, "extend1.ID"])
+  gene <- gene[!is.na(gene)]
+  result <- enricher(gene, TERM2GENE = wp2gene, TERM2NAME = pathway)
+  if (length(result) == 0) {
+    errm[i] <- "--> No gene can be mapped....\n
+--> return NULL..."
+  } else {
+    errm[i] <- ""
+    pp <- paste0(ugg[i], "++DMC_wilcox_opls_mean_identify_pathway.csv")
+    write.csv(result, pp)
+    # barplot(ewp, showCategory=20)
+    # cnetplot(ewp, foldChange=gene, circular = TRUE, colorEdge = TRUE)
+    # edox <- setReadable(ewp, 'org.Hs.eg.db', 'ENTREZID')
+    g <- cnetplot(result, foldChange = gene, categorySize = "p.adjust", colorEdge = TRUE)
+    gplot[[i]] <- g
+  }
+}
+if (length(gplot) > 0) {
+  spn <- ceiling(length(gplot) / 2)
+  plot_grid(plotlist = gplot, nrow = spn, labels = "AUTO")
+}
+```
+<b>`r errm`</b>
+
+
+## The related target proteins of differential metabolites {.tabset}
+
+### Target protein
+```{r echo=FALSE,warning=FALSE}
+file <- list.files()
+dd <- grep("DMC_wilcox_opls_mean_identify_target_2.csv", file, fixed = TRUE)
+if (length(dd) > 0) {
+  errm <- ""
+  data <- read.csv("DMC_wilcox_opls_mean_identify_target_2.csv")
+  dat <- data[, c("name", "Group", "general.name", "gene.name", "gene.function", "unport.ID", "genecard.ID")]
+  kable(dat)
+} else {
+  errm <- "There is no data for results!"
+}
+```
+
+
+### Enzyme
+```{r echo=FALSE,warning=FALSE}
+file <- list.files()
+dd <- grep("DMC_wilcox_opls_mean_identify_enzyme_2.csv", file, fixed = TRUE)
+if (length(dd) > 0) {
+  errm <- ""
+  data <- read.csv("DMC_wilcox_opls_mean_identify_enzyme_2.csv")
+  dat <- data[, c("name.x", "Group", "general.name", "ECID", "name.y")]
+  colnames(dat) <- c("name", "Group", "general.name", "ECID", "name")
+  kable(dat)
+} else {
+  errm <- "There is no data for results!"
+}
+```
+
+## {-}
+<b>`r errm`</b>
+<a href="DMC_wilcox_opls_mean_identify_target_2.csv">Download data of target protein</a><br>
+<b>`r errm`</b>
+<a href="DMC_wilcox_opls_mean_identify_enzyme_2.csv">Download data of enzyme protein</a>
+
+<br><br><br><br>

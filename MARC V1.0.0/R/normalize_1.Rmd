@@ -1,0 +1,183 @@
+---
+title: "Normalization of mass intentity by RC and SVA algorithm"
+date: "`r Sys.time()`"
+output:
+  bookdown::html_document2:
+    toc: yes
+    toc_float: true
+    number_sections: true
+    fig_width: 10
+    fig_height: 7
+    fig_caption: true
+    theme: spacelab
+    highlight: pygments
+---
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library("R.utils")
+library(cluster)
+library(fpc)
+library(mixOmics)
+library(cowplot)
+library(MetaboQC)
+
+library(gg.gap)
+```
+
+
+
+```{r echo=FALSE, warning=FALSE}
+ff <- getwd()
+id <- unlist(strsplit(ff, "/", fixed = TRUE))
+id <- id[length(id)]
+```
+
+<b>Job ID:</b> `r id`
+
+<br><br><br><br>
+
+# The overview of data
+<br>
+We show the data information and the basic description for all data resources.
+<br><br>
+## The data file list for our analysis
+In this part, we show the file size for each file from uploading files.<br>
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+dfs <- read.csv("dfs_1.csv")
+colnames(dfs) <- c("File name", "Size(M)")
+kable(dfs)
+```
+
+## Reference compound (RC) peaks intensity distribution
+We use the boxplot to show the difference among all groups of mass data.
+<br>
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
+rc_data <- read.csv("rc_data_1.csv")
+colnames(rc_data) <- c("group", "Intensity")
+p <- ggplot(data = rc_data)
+p + stat_boxplot(geom = "errorbar", width = 0.6, aes(x = group, y = Intensity, group = group)) +
+  geom_boxplot(aes(x = group, y = Intensity, group = group, fill = factor(group)), color = "black") + theme(legend.position = "none")
+```
+
+## The PCA plot for raw mass intensity data by grouping
+
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
+data_raw_QC <- read.csv("data_raw.csv")
+data_raw_pca <- data_raw_QC[, -c(1:4)]
+data_raw_pca <- apply(data_raw_pca, 2, as.numeric)
+pc <- pca(t(data_raw_pca), ncomp = 2)
+groupname <- data_raw_QC[, "pici"]
+
+pp <- data.frame(pc$loading)
+test <- data.frame(pp, group = as.character(groupname))
+g1 <- ggplot(data = test, (aes(test[, 1], test[, 2], fill = group, colour = group))) +
+  geom_point(size = 2) +
+  theme_bw() +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  stat_ellipse(geom = "polygon", alpha = 0.2) +
+  labs(x = paste("PC1(", sprintf("%.1f", pc$sde[1]^2 / sum(pc$sde^2) * 100), "%)", spe = ""), y = paste("PC2(", sprintf("%.1f", pc$sde[2]^2 / sum(pc$sde^2) * 100), "%)", spe = "")) +
+  theme(legend.position = "bottom")
+
+g2 <- ggplot(data = test, (aes(test[, 1], test[, 2], fill = group, colour = group))) +
+  geom_point(size = 2) +
+  theme_bw() +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  labs(x = paste("PC1(", sprintf("%.1f", pc$sde[1]^2 / sum(pc$sde^2) * 100), "%)", spe = ""), y = paste("PC2(", sprintf("%.1f", pc$sde[2]^2 / sum(pc$sde^2) * 100), "%)", spe = "")) +
+  theme(legend.position = "bottom")
+plot_grid(g1, g2, nrow = 1, labels = LETTERS[1:2], align = c("v", "h"))
+```
+
+# Adjusting mass data by below methods
+<br>
+
+## Adjusted by RC of samples
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
+data_raw_QC <- read.csv("sample_mass_RC_normalize.csv")
+data_raw_pca <- data_raw_QC[, -c(1:4)]
+data_raw_pca <- apply(data_raw_pca, 2, as.numeric)
+pc <- pca(t(data_raw_pca), ncomp = 2)
+groupname <- data_raw_QC[, "pici"]
+
+pp <- data.frame(pc$loading)
+test <- data.frame(pp, group = as.character(groupname))
+g1 <- ggplot(data = test, (aes(test[, 1], test[, 2], fill = group, colour = group))) +
+  geom_point(size = 2) +
+  theme_bw() +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  stat_ellipse(geom = "polygon", alpha = 0.2) +
+  labs(x = paste("PC1(", sprintf("%.1f", pc$sde[1]^2 / sum(pc$sde^2) * 100), "%)", spe = ""), y = paste("PC2(", sprintf("%.1f", pc$sde[2]^2 / sum(pc$sde^2) * 100), "%)", spe = "")) +
+  theme(legend.position = "bottom")
+
+g2 <- ggplot(data = test, (aes(test[, 1], test[, 2], fill = group, colour = group))) +
+  geom_point(size = 2) +
+  theme_bw() +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  labs(x = paste("PC1(", sprintf("%.1f", pc$sde[1]^2 / sum(pc$sde^2) * 100), "%)", spe = ""), y = paste("PC2(", sprintf("%.1f", pc$sde[2]^2 / sum(pc$sde^2) * 100), "%)", spe = "")) +
+  theme(legend.position = "bottom")
+plot_grid(g1, g2, nrow = 1, labels = LETTERS[1:2], align = c("v", "h"))
+```
+
+
+
+## Adjusted by SVA 
+
+
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
+data_raw_QC <- read.csv("sample_mass_RC_sva_normalize.csv")
+data_raw_pca <- data_raw_QC[, -c(1:4)]
+data_raw_pca <- apply(data_raw_pca, 2, as.numeric)
+pc <- pca(t(data_raw_pca), ncomp = 2)
+groupname <- data_raw_QC[, "pici"]
+
+pp <- data.frame(pc$loading)
+test <- data.frame(pp, group = as.character(groupname))
+g1 <- ggplot(data = test, (aes(test[, 1], test[, 2], fill = group, colour = group))) +
+  geom_point(size = 2) +
+  theme_bw() +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  stat_ellipse(geom = "polygon", alpha = 0.2) +
+  labs(x = paste("PC1(", sprintf("%.1f", pc$sde[1]^2 / sum(pc$sde^2) * 100), "%)", spe = ""), y = paste("PC2(", sprintf("%.1f", pc$sde[2]^2 / sum(pc$sde^2) * 100), "%)", spe = "")) +
+  theme(legend.position = "bottom")
+
+g2 <- ggplot(data = test, (aes(test[, 1], test[, 2], fill = group, colour = group))) +
+  geom_point(size = 2) +
+  theme_bw() +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  labs(x = paste("PC1(", sprintf("%.1f", pc$sde[1]^2 / sum(pc$sde^2) * 100), "%)", spe = ""), y = paste("PC2(", sprintf("%.1f", pc$sde[2]^2 / sum(pc$sde^2) * 100), "%)", spe = "")) +
+  theme(legend.position = "bottom")
+plot_grid(g1, g2, nrow = 1, labels = LETTERS[1:2], align = c("v", "h"))
+```
+
+
+# The comparation of RC and SVA methods
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
+mean <- read.csv("mean_1.csv")
+mean <- data.frame(mean)
+ss <- quantile(as.numeric(mean[, 2]))
+g1 <- ggplot(mean, aes(x = id, y = as.numeric(intensity), color = group, group = group)) +
+  geom_line() +
+  labs(
+    y = "Mean of peaks intensity", x = ""
+  ) +
+  theme(axis.text = element_blank()) +
+  ylim(c(0, ss[5]))
+
+
+sd <- read.csv("sd_1.csv")
+sd <- data.frame(sd)
+ss <- quantile(as.numeric(sd[, 2]))
+g2 <- ggplot(sd, aes(x = id, y = as.numeric(intensity), color = group, group = group)) +
+  geom_line() +
+  labs(
+    y = "SD of peaks intensity", x = ""
+  ) +
+  theme(axis.text = element_blank()) +
+  ylim(c(0, ss[5]))
+
+
+plot_grid(g1, g2, nrow = 2, labels = LETTERS[1:2], align = c("v", "h"))
+```
+
+<br>
+<br><br><br><br>
