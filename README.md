@@ -7,8 +7,8 @@ An open-source analysis software for untargeted metabolism data (openNAU) was co
 ## Installation
 ___
 
-* [metaQC]('metaQC V1.0.0'/README.md)
-* [MARC]('MARC V1.0.0'/README.md)
+* [metaQC](metaQC%20V1.0.0/README.md)
+* [MARC](MARC%20V1.0.0/README.md)
 
 ## Authors
 ___
