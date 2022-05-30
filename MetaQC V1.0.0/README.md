@@ -76,7 +76,7 @@ ___
 * method 1 (Windows)  
 Double-click [MetaQC.Rproj] to open the software directly.  
 * method 2 (Linux)  
-sudo su -c "R -e \"install.packages('shiny',repos='https://cran.rstudio.com/')\"  
+sudo su -c "R -e \"install.packages('shiny',repos='https://cran.rstudio.com/')\"  "
 
 	-Ubuntu    
 --sudo apt-get install gdebi-core  
