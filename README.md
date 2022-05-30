@@ -1,7 +1,8 @@
 # openNAU
 ___
-An open-source analysis software for untargeted metabolism data (openNAU) was constructed. It includes the extraction of raw mass data and quality control for the identification of differential metabolic ion peaks. A reference metabolomics database based on public databases was also constructed. Finally, a complete analysis system platform for untargeted metabolomics was established.
-<img src="https://github.com/zjuRong/openNAU/blob/main/framework.jpg" width = "60%" height = "60%" alt="" align=center />
+An open-source analysis software for untargeted metabolism data (openNAU) was constructed. It includes the extraction of raw mass data and quality control for the identification of differential metabolic ion peaks. A reference metabolomics database based on public databases was also constructed. Finally, a complete analysis system platform for untargeted metabolomics was established.  
+
+<img src="https://github.com/zjuRong/openNAU/blob/main/framework.jpg" width = "70%" height = "70%" alt="" align='center' />
 ## Installation
 ___
 
