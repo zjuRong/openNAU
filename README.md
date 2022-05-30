@@ -2,7 +2,7 @@
 ___
 An open-source analysis software for untargeted metabolism data (openNAU) was constructed. It includes the extraction of raw mass data and quality control for the identification of differential metabolic ion peaks. A reference metabolomics database based on public databases was also constructed. Finally, a complete analysis system platform for untargeted metabolomics was established.
 
-![framework](framework.jpg#pic_center)
+![framework](framework.jpg#pic_center=60%x60%)
 
 ## Installation
 ___
@@ -13,7 +13,7 @@ ___
 ## Document 
 ___
 * [Document](Document.pdf)
-* Test data in [MetaQC%20V1.0.0/data/raw_data/test/]
+* Test data in [MetaQC V1.0.0/data/raw_data/test/]
 
 ## Authors
 ___
