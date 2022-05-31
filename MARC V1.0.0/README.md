@@ -49,6 +49,7 @@ ___
 ### 1. install LAMP environment
 ### 2. Configue the database. [Document](database_configure.pdf), [Database sql file](metabolism.sql).
 ### 3. Copy the software to WWW directory.
+### 4. Due to the limitation of storage space, we stored refMet in Google web disk (https://drive.google.com/drive/folders/1RjU4RIzl9P-gA_AV8Iy--Qk4VvJmXPNO?usp=sharing). users should copy this data to [data/refMet/]
 ### 4. Run 'nohup sudo php [Path]/socket/server_parallel.php' and ensure that this process is always running on the server.
 ### 5. open the software[IP/MARC] or [www.xxxx.com/MARC]
 
