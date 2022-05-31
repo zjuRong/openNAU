@@ -1,0 +1,1 @@
+store the uploaded raw data by using FTP
