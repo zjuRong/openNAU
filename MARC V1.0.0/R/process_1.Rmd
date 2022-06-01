@@ -72,7 +72,7 @@ for (f in file_wilcox)
     geom_hline(yintercept = 1.3, linetype = 4) +
     # log2(2)=1,log2(0.5)=-1
     geom_vline(xintercept = c(-1, 1), linetype = 4) +
-    ylim(min(data$lgFDR), max(data$lgFDR))
+    ylim(min(data$lgFDR), max(data$lgFDR))+theme_bw()
 
   gplot[[pi]] <- p
   pi <- pi + 1
@@ -190,7 +190,7 @@ if (length(dd) > 0) {
   res <- data.frame(res)
   ggplot(data = res, aes(x = extend.DB, y = n, fill = extend.DB), fill = extend.DB) +
     geom_bar(stat = "identity") +
-    geom_text(mapping = aes(x = extend.DB, y = n, label = n), size = 3) +
+    geom_text(mapping = aes(x = extend.DB, y = n, label = n), size = 3)+theme_bw()+
     theme(legend.position = "none") +
     coord_flip()
 } else {
