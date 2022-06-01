@@ -41,7 +41,7 @@ BiocManager::install("clusterProfiler")
 install.packages("ggplot2")
 install.packages("gridExtra")
 install.packages("ggrepel")
-
+install.packages("ggnewscale")
 ```
 
 ## Installation

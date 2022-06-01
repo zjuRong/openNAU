@@ -536,7 +536,7 @@ server <- shinyServer(function(input, output, session) {
       dat[which(dat$wfinal01 == 0), "wfinal01"] <- "Outlier"
       dat <- data.frame(sample = rownames(dat), dist1 = dat$x.dist1, dist2 = dat$x.dist2, group = dat$wfinal01)
       gg <- ggplot(data = dat, (aes(dist1, dist2, fill = group, colour = group))) +
-        geom_point(size = 2) +
+        geom_point(size = 2) +theme_bw()
         guides(colour = guide_legend(override.aes = list(size = 2))) +
         theme(legend.position = "bottom") +
         geom_text(aes(dist1, dist2, label = sample))
