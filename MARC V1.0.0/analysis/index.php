@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <title>Bioinformatics Analysis Lab</title>
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script src="https://lib.baomitu.com/jquery/1.12.4/jquery.min.js"></script>
 <!-- Bootstrap core CSS -->
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.usebootstrap.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
 
   <!-- Optional Bootstrap Theme -->
