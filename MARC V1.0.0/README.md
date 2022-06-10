@@ -50,7 +50,17 @@ ___
 ### 2. Configue the database. [Document](database_configure.pdf), [Database sql file](metabolism.sql).
 ### 3. Copy the software to WWW directory.
 ### 4. Due to the limitation of storage space, we stored refMet in Google web disk (https://drive.google.com/drive/folders/1RjU4RIzl9P-gA_AV8Iy--Qk4VvJmXPNO?usp=sharing). users should copy this data to [data/refMet/]
-### 5. Run 'nohup php [Path]/socket/server_parallel.php' and ensure that this process is always running on the server.
-### 6. open the software[IP/MARC] or [www.xxxx.com/MARC]
+### 5. Open file [Path]/socket/server_parallel.php and change the detial parameter for database, IP, port, and R program directory：
+```
+$host='127.0.0.1'; //database IP/location
+$database='metabolism';   //database name
+$user='zju_meta';   //database user
+$pass='973254023';   //user password for database
+$ip="10.71.208.94";  // server IP
+$port=8761; // listening port
+$R_path="/var/www/html/metabolism/R/"; // R or others programs directory for analysis 
+```
+### 6. Run `nohup php [Path]/socket/server_parallel.php` and ensure that this process is always running on the server.
+### 7. open the software[IP/MARC] or [www.xxxx.com/MARC]
 
 
