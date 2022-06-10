@@ -60,7 +60,7 @@ $ip="10.71.208.94";  // server IP
 $port=8761; // listening port
 $R_path="/var/www/html/metabolism/R/"; // R or others programs directory for analysis 
 ```
-### 6. Run `nohup php [Path]/socket/server_parallel.php` and ensure that this process is always running on the server.
+### 6. Run `[nohup] php [Path]/socket/server_parallel.php` and ensure that this process is always running on the server.
 ### 7. open the software[IP/MARC] or [www.xxxx.com/MARC]
 
 
