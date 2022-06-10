@@ -159,7 +159,7 @@ if (length(dd) == 0) {
 <b>`r errm`</b>
 
 
-# THe metabolites matching in public database
+# The metabolites matching in public database
 
 
 ## The information for differential metabolites

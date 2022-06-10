@@ -536,10 +536,10 @@ server <- shinyServer(function(input, output, session) {
       dat[which(dat$wfinal01 == 0), "wfinal01"] <- "Outlier"
       dat <- data.frame(sample = rownames(dat), dist1 = dat$x.dist1, dist2 = dat$x.dist2, group = dat$wfinal01)
       gg <- ggplot(data = dat, (aes(dist1, dist2, fill = group, colour = group))) +
-        geom_point(size = 2) +theme_bw()
+        geom_point(size = 2) +
         guides(colour = guide_legend(override.aes = list(size = 2))) +
         theme(legend.position = "bottom") +
-        geom_text(aes(dist1, dist2, label = sample))
+        geom_text(aes(dist1, dist2, label = sample))+theme_bw()
       ggplotly(gg)
     }
   })
@@ -609,7 +609,7 @@ server <- shinyServer(function(input, output, session) {
         geom_line() +
         labs(
           y = "Mean of peaks intensity", x = ""
-        ) +
+        ) +theme_bw()+
         theme(axis.text = element_blank())
 
 
@@ -630,7 +630,7 @@ server <- shinyServer(function(input, output, session) {
         geom_line() +
         labs(
           y = "SD of peaks intensity", x = ""
-        ) +
+        ) +theme_bw()+
         theme(axis.text = element_blank())
       pp <- plot_grid(g1, g2, nrow = 2, labels = LETTERS[1:2], align = c("v", "h"))
       list(plot = pp, file = file, data = impute_data)
