@@ -154,7 +154,7 @@ plot_grid(g1, g2, nrow = 1, labels = LETTERS[1:2], align = c("v", "h"))
 ```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
 mean <- read.csv("mean_1.csv")
 mean <- data.frame(mean)
-ss <- quantile(as.numeric(mean[, 2]))
+ss <- quantile(as.numeric(mean[, 2]),na.rm = TRUE)
 g1 <- ggplot(mean, aes(x = id, y = as.numeric(intensity), color = group, group = group)) +
   geom_line() +
   labs(
@@ -166,7 +166,7 @@ g1 <- ggplot(mean, aes(x = id, y = as.numeric(intensity), color = group, group =
 
 sd <- read.csv("sd_1.csv")
 sd <- data.frame(sd)
-ss <- quantile(as.numeric(sd[, 2]))
+ss <- quantile(as.numeric(sd[, 2]),na.rm = TRUE)
 g2 <- ggplot(sd, aes(x = id, y = as.numeric(intensity), color = group, group = group)) +
   geom_line() +
   labs(
