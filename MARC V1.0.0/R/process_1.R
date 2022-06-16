@@ -44,6 +44,7 @@ if (!file.exists("sample_mass_RC_QC_normalize_zscore.csv")) {
 data <- read.csv("sample_mass_RC_QC_normalize_zscore.csv")
 ggroup <- as.character(data[, "group"])
 group <- unique(as.character(data[, "group"]))
+
 data_peaks <- data[, -c(1:4)]
 peaks <- colnames(data_peaks)
 m <- length(group) - 1
@@ -83,16 +84,19 @@ cat("progress:40", file = output_log, sep = "\n", append = TRUE)
 ## OPLS-DA
 
 m <- length(group) - 1
+sd=ed=1
 for (i in 1:m) {
   t <- i + 1
   for (j in t:length(group))
   {
+    sd=sd+1
     group1 <- group[i]
     group2 <- group[j]
     dg1 <- which(ggroup == group1)
     dg2 <- which(ggroup == group2)
     opls <- try(opls(data_peaks[c(dg1, dg2), ], ggroup[c(dg1, dg2)], predI = 1, orthoI = 2, fig.pdfC = FALSE))
     if (class(opls) == "try-error") {
+      ed=ed+1
     } else {
       VIP <- getVipVn(opls)
       data <- attributes(opls)
@@ -114,7 +118,10 @@ for (i in 1:m) {
     }
   }
 }
-
+if(ed==sd){
+  stop(" OPLS-DA can not been peformed!")
+  
+}
 cat("progress:60", file = output_log, sep = "\n", append = TRUE)
 ##### Venn diagram
 mass_inf <- read.csv("upload/mass_inf.csv")

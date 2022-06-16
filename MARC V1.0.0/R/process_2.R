@@ -44,6 +44,11 @@ if (!file.exists("sample_mass_RC_sva_normalize.csv")) {
 }
 data <- read.csv("sample_mass_RC_sva_normalize.csv")
 ggroup <- as.character(data[, "group"])
+ss=which(ggroup=="QC")
+if(length(ss)>0){
+data=data[-ss,]
+}
+
 group <- unique(as.character(data[, "group"]))
 data_peaks <- data[, -c(1:4)]
 peaks <- colnames(data_peaks)
@@ -84,16 +89,19 @@ cat("progress:40", file = output_log, sep = "\n", append = TRUE)
 ## OPLS-DA
 
 m <- length(group) - 1
+sd=ed=1
 for (i in 1:m) {
   t <- i + 1
   for (j in t:length(group))
   {
+    sd=sd+1
     group1 <- group[i]
     group2 <- group[j]
     dg1 <- which(ggroup == group1)
     dg2 <- which(ggroup == group2)
     opls <- try(opls(data_peaks[c(dg1, dg2), ], ggroup[c(dg1, dg2)], predI = 1, orthoI = 2, fig.pdfC = FALSE))
     if (class(opls) == "try-error") {
+	ed=ed+1
     } else {
       VIP <- getVipVn(opls)
       data <- attributes(opls)
@@ -114,6 +122,10 @@ for (i in 1:m) {
       write.csv(VIP, ff)
     }
   }
+}
+if(ed==sd){
+   stop(" OPLS-DA can not been peformed!")
+
 }
 
 cat("progress:60", file = output_log, sep = "\n", append = TRUE)

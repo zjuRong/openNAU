@@ -222,7 +222,7 @@ for (i in 1:m) {
   gene <- as.character(genelist[sg, "extend1.ID"])
   gene <- gene[!is.na(gene)]
   result <- enricher(gene, TERM2GENE = wp2gene, TERM2NAME = pathway)
-  if (length(result) == 0) {
+  if (length(result) != 2) {
     errm[i] <- "--> No gene can be mapped....\n
 --> return NULL..."
   } else {
