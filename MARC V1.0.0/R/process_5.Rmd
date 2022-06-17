@@ -31,9 +31,38 @@ id <- id[length(id)]
 <b>Job ID:</b> `r id`
 
 <br><br><br><br>
+
+# The PCA plot for peak data by grouping
+
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
+data_raw_QC <- read.csv("sample_mass_RC_QC_normalize_spoly4.csv")
+data_raw_pca <- data_raw_QC[, -c(1:4)]
+data_raw_pca <- apply(data_raw_pca, 2, as.numeric)
+pc <- pca(t(data_raw_pca), ncomp = 2)
+groupname <- data_raw_QC[, "group"]
+
+pp <- data.frame(pc$loading)
+test <- data.frame(pp, group = as.character(groupname))
+g1 <- ggplot(data = test, (aes(test[, 1], test[, 2], fill = group, colour = group))) +
+  geom_point(size = 2) +
+  theme_bw() +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  stat_ellipse(geom = "polygon", alpha = 0.2) +
+  labs(x = paste("PC1(", sprintf("%.1f", pc$sde[1]^2 / sum(pc$sde^2) * 100), "%)", spe = ""), y = paste("PC2(", sprintf("%.1f", pc$sde[2]^2 / sum(pc$sde^2) * 100), "%)", spe = "")) +
+  theme(legend.position = "bottom")
+
+g2 <- ggplot(data = test, (aes(test[, 1], test[, 2], fill = group, colour = group))) +
+  geom_point(size = 2) +
+  theme_bw() +
+  guides(colour = guide_legend(override.aes = list(size = 2))) +
+  labs(x = paste("PC1(", sprintf("%.1f", pc$sde[1]^2 / sum(pc$sde^2) * 100), "%)", spe = ""), y = paste("PC2(", sprintf("%.1f", pc$sde[2]^2 / sum(pc$sde^2) * 100), "%)", spe = "")) +
+  theme(legend.position = "bottom")
+plot_grid(g1, g2, nrow = 1, labels = LETTERS[1:2], align = c("v", "h"))
+```
+
+
 # Differential metabolites analysis
 In this section, we use the wilcox rank test and OPLS-DA to analyze the mass intensity. All differential peaks conform to the threshold  {FDR<0.05 and FC (FC>2 or FC<0.5)} and VIP>1
-
 
 ## Differential nalysis by wilcox rank test
 
