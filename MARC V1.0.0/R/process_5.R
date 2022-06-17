@@ -1,4 +1,4 @@
-#####Z score
+#######spoly4
 
 library(ggplot2)
 library(dplyr)
@@ -40,15 +40,17 @@ file.create(output_log)
 time <- paste0("Create Time: ", ft)
 cat(time, file = output_log, sep = "\n", append = TRUE)
 cat("progress:10", file = output_log, sep = "\n", append = TRUE)
-if (!file.exists("sample_mass_RC_QC_normalize_zscore.csv")) {
-  stop(" No 'sample_mass_RC_QC_normalize_zscore.csv' file in this directory !")
+if (!file.exists("sample_mass_RC_QC_normalize_spoly4.csv")) {
+  stop(" No 'sample_mass_RC_QC_normalize_spoly4.csv' file in this directory !")
 }
-data <- read.csv("sample_mass_RC_QC_normalize_zscore.csv")
+data <- read.csv("sample_mass_RC_QC_normalize_spoly4.csv")
 ggroup <- as.character(data[, "group"])
 group <- unique(as.character(data[, "group"]))
 
 data_peaks <- data[, -c(1:4)]
 peaks <- colnames(data_peaks)
+#peaks=unlist(lapply(peaks,function(x){x=unlist(strsplit(x,"_",fixed=T))[1];return(x)}))
+#colnames(data_peaks)=peaks
 m <- length(group) - 1
 for (i in 1:m) {
   t <- i + 1
@@ -72,13 +74,13 @@ for (i in 1:m) {
     for (p in 1:dim(res_ord)[1]) fdr[p] <- as.numeric(res_ord[p, 3]) * dim(res_ord)[1] / p
     res_fdr <- cbind(res_ord, fdr)
     colnames(res_fdr) <- c("ID", "FC", "P", "FDR")
-    ff <- paste0(group1, " vs ", group2, "++wilcox_all.csv")
+    ff <- paste0(group1, " vs ", group2, "++wilcox_all_5.csv")
     write.csv(res_fdr, ff, row.names = FALSE)
     thres1 <- which(as.numeric(res_fdr[, "FDR"]) < 0.05)
     thres2 <- which(abs(as.numeric(res_fdr[, "FC"])) > 2 | abs(as.numeric(res_fdr[, "FC"])) < 0.5)
     thres <- setdiff(thres1, thres2)
     res_fdr_mean <- res_fdr[thres, ]
-    ff <- paste0(group1, " vs ", group2, "++wilcox_mean.csv")
+    ff <- paste0(group1, " vs ", group2, "++wilcox_mean_5.csv")
     write.csv(res_fdr_mean, ff, row.names = FALSE)
   }
 }
@@ -110,16 +112,16 @@ for (i in 1:m) {
       dd <- cbind(x, y)
       dd <- cbind(dd, ggroup[c(dg1, dg2)])
       colnames(dd) <- c("x", "y", "group")
-      ff <- paste0(group1, " vs ", group2, "++oplsda_data.csv")
+      ff <- paste0(group1, " vs ", group2, "++oplsda_data_5.csv")
       write.csv(dd, ff, row.names = FALSE)
       summary <- data$summaryDF[, 1:4]
-      ff <- paste0(group1, " vs ", group2, "++oplsda_summary.csv")
+      ff <- paste0(group1, " vs ", group2, "++oplsda_summary_5.csv")
       write.csv(summary, ff, row.names = FALSE)
-      ff <- paste0(group1, " vs ", group2, "++VIP_all.csv")
-      write.csv(vip_data, ff,row.names=F)
-      VIP <- vip_data[which(VIP > 1),]
-      ff <- paste0(group1, " vs ", group2, "++VIP_mean.csv")
-      write.csv(VIP, ff,row.names=F)
+      ff <- paste0(group1, " vs ", group2, "++VIP_all_5.csv")
+      write.csv(vip_data, ff)
+      VIP <- vip_data[which(VIP > 1)]
+      ff <- paste0(group1, " vs ", group2, "++VIP_mean_5.csv")
+      write.csv(VIP, ff)
     }
   }
 }
@@ -132,9 +134,10 @@ cat("progress:60", file = output_log, sep = "\n", append = TRUE)
 mass_inf <- read.csv("upload/mass_inf.csv")
 mass_inf <- data.frame(mass_inf)
 colnames(mass_inf)[1] <- "name"
+mass_inf$name=paste0(mass_inf$name,"_Norm")
 file <- list.files()
 
-dd <- grep("VIP_mean.csv", file, fixed = TRUE)
+dd <- grep("VIP_mean_5.csv", file, fixed = TRUE)
 if (length(dd) == 0) {
 } else {
   file_popls <- file[dd]
@@ -144,7 +147,7 @@ if (length(dd) == 0) {
     data <- read.csv(file = f)
     nn <- unlist(strsplit(f, "++", fixed = TRUE))
     ggr <- nn[1]
-    wilcox <- read.csv(paste0(ggr, "++wilcox_mean.csv"))
+    wilcox <- read.csv(paste0(ggr, "++wilcox_mean_5.csv"))
     wilcox <- as.character(wilcox[, 1])
     oplsda <- as.character(data[, 1])
     int_mean <- intersect(wilcox, oplsda)
@@ -156,7 +159,7 @@ if (length(dd) == 0) {
   res <- data.frame(res)
   colnames(res) <- c("name", "Group")
   peak_res <- left_join(res, mass_inf, by = "name")
-  write.csv(peak_res, "DMC_wilcox_opls_mean.csv", row.names = FALSE)
+  write.csv(peak_res, "DMC_wilcox_opls_mean_5.csv", row.names = FALSE)
 }
 cat("progress:75", file = output_log, sep = "\n", append = TRUE)
 ### peaks transform to compound
@@ -165,9 +168,9 @@ refmet <- read.csv("../../refMet/refMet_all_compound.csv")
 
 file <- list.files()
 
-dd <- grep("DMC_wilcox_opls_mean.csv", file, fixed = TRUE)
+dd <- grep("DMC_wilcox_opls_mean_5.csv", file, fixed = TRUE)
 if (length(dd) > 0) {
-  peak_mean <- read.csv("DMC_wilcox_opls_mean.csv", header = TRUE)
+  peak_mean <- read.csv("DMC_wilcox_opls_mean_5.csv", header = TRUE)
   peak_res <- peak_mean[, c("name", "Group", "mzmed", "polar")]
   m <- dim(peak_res)[1]
   peak_res$mzmin <- peak_res$mzmax <- rep(0, m)
@@ -190,7 +193,7 @@ if (length(dd) > 0) {
       res <- rbind(res, data_m)
     }
   }
-  write.csv(res, "DMC_wilcox_opls_mean_identify.csv", row.names = FALSE)
+  write.csv(res, "DMC_wilcox_opls_mean_identify_5.csv", row.names = FALSE)
 }
 cat("progress:80", file = output_log, sep = "\n", append = TRUE)
 ############## gene
@@ -200,7 +203,7 @@ dd <- which(is.na(res[, "extend1.ID"]))
 data <- res[-dd, ]
 data_res <- left_join(data, protein, by = "extend1.ID")
 
-write.csv(data_res, "DMC_wilcox_opls_mean_identify_target.csv", row.names = FALSE)
+write.csv(data_res, "DMC_wilcox_opls_mean_identify_target_5.csv", row.names = FALSE)
 
 ############## enzyme
 enzyme <- read.csv("../../refMet/enyme_compound_hmdb.csv")
@@ -209,10 +212,10 @@ dd <- which(is.na(res[, "extend1.ID"]))
 data <- res[-dd, ]
 data_res <- left_join(data, enzyme, by = "extend1.ID")
 
-write.csv(data_res, "DMC_wilcox_opls_mean_identify_enzyme.csv", row.names = FALSE)
+write.csv(data_res, "DMC_wilcox_opls_mean_identify_enzyme_5.csv", row.names = FALSE)
 
 cat("progress:90", file = output_log, sep = "\n", append = TRUE)
 
 
-file.copy(from = "../../../R/process_1.Rmd", to = "process_1.Rmd", overwrite = TRUE)
-render("process_1.Rmd", html_document(toc = TRUE, toc_depth = 3), "process_1.html")
+file.copy(from = "../../../R/process_5.Rmd", to = "process_5.Rmd", overwrite = TRUE)
+render("process_5.Rmd", html_document(toc = TRUE, toc_depth = 3), "process_5.html")

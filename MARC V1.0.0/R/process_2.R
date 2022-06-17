@@ -1,3 +1,5 @@
+####SVA
+
 library(ggplot2)
 library(dplyr)
 library("R.utils")
@@ -32,7 +34,7 @@ if (status == 1) {
 
 setwd(rdir)
 # unzip("upload.zip",exdir="upload")
-output_log <- paste0(dir, "_1.log")
+output_log <- paste0(dir, "_2.log")
 ft <- Sys.time()
 
 file.create(output_log)
@@ -104,6 +106,9 @@ for (i in 1:m) {
 	ed=ed+1
     } else {
       VIP <- getVipVn(opls)
+	  vip_data=cbind(names(VIP),VIP)
+	  vip_data=data.frame(vip_data)
+	  colnames(vip_data)=c("Peak","VIP value")
       data <- attributes(opls)
       x <- data$scoreMN
       y <- data$orthoScoreMN[, 1]
@@ -116,10 +121,10 @@ for (i in 1:m) {
       ff <- paste0(group1, " vs ", group2, "++oplsda_summary_2.csv")
       write.csv(summary, ff, row.names = FALSE)
       ff <- paste0(group1, " vs ", group2, "++VIP_all_2.csv")
-      write.csv(VIP, ff)
-      VIP <- VIP[which(VIP > 1)]
+      write.csv(vip_data, ff,row.names=F)
+      VIP <- vip_data[which(VIP > 1),]
       ff <- paste0(group1, " vs ", group2, "++VIP_mean_2.csv")
-      write.csv(VIP, ff)
+      write.csv(VIP, ff,row.names=F)
     }
   }
 }
@@ -174,12 +179,12 @@ if (length(dd) > 0) {
   peak_res$mzmin <- peak_res$mzmax <- rep(0, m)
   res <- c()
   for (i in 1:m) {
-    if (peak_res[i, "polar"] == "Positive") {
+    if (as.character(peak_res[i, "polar"]) == "Positive") {
       peak_res[i, "mzmed"] <- as.numeric(peak_res[i, "mzmed"]) - 1.0078 # 1.00783
       peak_res[i, "mzmin"] <- as.numeric(peak_res[i, "mzmed"]) * (1 - 10 / 1000000)
       peak_res[i, "mzmax"] <- as.numeric(peak_res[i, "mzmed"]) * (1 + 10 / 1000000)
     }
-    if (peak_res[i, "polar"] == "Negative") {
+    if (as.character(peak_res[i, "polar"]) == "Negative") {
       peak_res[i, "mzmed"] <- as.numeric(peak_res[i, "mzmed"]) + 1.0078 # 1.00783
       peak_res[i, "mzmin"] <- as.numeric(peak_res[i, "mzmed"]) * (1 - 10 / 1000000)
       peak_res[i, "mzmax"] <- as.numeric(peak_res[i, "mzmed"]) * (1 + 10 / 1000000)

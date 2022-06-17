@@ -1,5 +1,5 @@
 ---
-title: "Process 1 (Z score)"
+title: "Process 4 (Spoly3)"
 date: "`r Sys.time()`"
 output:
   bookdown::html_document2:
@@ -39,7 +39,7 @@ In this section, we use the wilcox rank test and OPLS-DA to analyze the mass int
 
 ```{r  echo=FALSE, fig.align='center', warning=FALSE,split=TRUE, fig.height=7,fig.width=10}
 file <- list.files()
-dd <- grep("wilcox_all.csv", file, fixed = TRUE)
+dd <- grep("wilcox_all_4.csv", file, fixed = TRUE)
 file_wilcox <- file[dd]
 pi <- 1
 gplot <- list()
@@ -88,7 +88,7 @@ plot_grid(plotlist = gplot, nrow = spn, labels = "AUTO")
 ```{r echo=FALSE, fig.align='center', warning=FALSE,split=TRUE, fig.height=7,fig.width=10}
 file <- list.files()
 
-dd <- grep("oplsda_data.csv", file, fixed = TRUE)
+dd <- grep("oplsda_data_4.csv", file, fixed = TRUE)
 if (length(dd) == 0) {
   errm <- "*************Error : No model was built because the predictive component was not significant*************."
 } else {
@@ -101,7 +101,7 @@ if (length(dd) == 0) {
     data <- read.csv(file = f)
     nn <- unlist(strsplit(f, "++", fixed = TRUE))
     ggr <- nn[1]
-    summary <- read.csv(paste0(ggr, "++oplsda_summary.csv"))
+    summary <- read.csv(paste0(ggr, "++oplsda_summary_4.csv"))
     g <- ggplot(data = data, (aes(x, y, fill = group, colour = group))) +
       geom_point(size = 2) +
       theme_bw() +
@@ -128,7 +128,7 @@ if (length(dd) == 0) {
 ```{r echo=FALSE, fig.align='center', warning=FALSE,split=TRUE, fig.height=7,fig.width=10}
 file <- list.files()
 
-dd <- grep("VIP_mean.csv", file, fixed = TRUE)
+dd <- grep("VIP_mean_4.csv", file, fixed = TRUE)
 if (length(dd) == 0) {
   errm <- "*************Error : No Data for VIP>1*************"
 } else {
@@ -141,7 +141,7 @@ if (length(dd) == 0) {
     data <- read.csv(file = f)
     nn <- unlist(strsplit(f, "++", fixed = TRUE))
     ggr <- nn[1]
-    wilcox <- read.csv(paste0(ggr, "++wilcox_mean.csv"))
+    wilcox <- read.csv(paste0(ggr, "++wilcox_mean_4.csv"))
     wilcox <- as.character(wilcox[, 1])
     oplsda <- as.character(data[, 1])
     da <- list(wilcox = wilcox, oplsda = oplsda)
@@ -166,9 +166,9 @@ if (length(dd) == 0) {
 ```{r echo=FALSE}
 file <- list.files()
 
-dd <- grep("DMC_wilcox_opls_mean.csv", file, fixed = TRUE)
+dd <- grep("DMC_wilcox_opls_mean_4.csv", file, fixed = TRUE)
 if (length(dd) > 0) {
-  peaks_mean <- read.csv("DMC_wilcox_opls_mean.csv", header = TRUE)
+  peaks_mean <- read.csv("DMC_wilcox_opls_mean_4.csv", header = TRUE)
   kable(peaks_mean[1:50, 1:5])
 }
 ```
@@ -180,10 +180,10 @@ This section uses the refMet of our database,including AIICCs, MassBank, KEGG, C
 
 file <- list.files()
 
-dd <- grep("DMC_wilcox_opls_mean_identify.csv", file, fixed = TRUE)
+dd <- grep("DMC_wilcox_opls_mean_identify_4.csv", file, fixed = TRUE)
 if (length(dd) > 0) {
   errm <- ""
-  peaks_mean <- read.csv("DMC_wilcox_opls_mean_identify.csv", header = TRUE)
+  peaks_mean <- read.csv("DMC_wilcox_opls_mean_identify_4.csv", header = TRUE)
   res <- peaks_mean %>%
     group_by(extend.DB) %>%
     summarise(n = length(unique(CID)))
@@ -197,7 +197,7 @@ if (length(dd) > 0) {
   errm <- "*************No data for our results !***********"
 }
 ```
-<a href="DMC_wilcox_opls_mean_identify.csv">Download data of all database</a>
+<a href="DMC_wilcox_opls_mean_identify_4.csv">Download data of all database</a>
 
 
 <b>`r errm`</b>
@@ -210,7 +210,7 @@ colnames(wp2gene) <- c("PID", "gene")
 pathway <- read.csv("../../refMet/human_pathway_pathbank.csv")
 pathway <- data.frame(pathway[, c(1, 2)])
 colnames(pathway) <- c("PID", "name")
-genelist <- read.csv("DMC_wilcox_opls_mean_identify.csv")
+genelist <- read.csv("DMC_wilcox_opls_mean_identify_4.csv")
 group <- as.character(genelist[, 2])
 ugg <- unique(group)
 m <- length(ugg)
@@ -227,7 +227,7 @@ for (i in 1:m) {
 --> return NULL..."
   } else {
     errm[i] <- ""
-    pp <- paste0(ugg[i], "++DMC_wilcox_opls_mean_identify_pathway.csv")
+    pp <- paste0(ugg[i], "++DMC_wilcox_opls_mean_identify_pathway_4.csv")
     write.csv(result, pp)
     # barplot(ewp, showCategory=20)
     # cnetplot(ewp, foldChange=gene, circular = TRUE, colorEdge = TRUE)
@@ -249,10 +249,10 @@ if (length(gplot) > 0) {
 ### Target protein (Top 20)
 ```{r echo=FALSE,warning=FALSE}
 file <- list.files()
-dd <- grep("DMC_wilcox_opls_mean_identify_target.csv", file, fixed = TRUE)
+dd <- grep("DMC_wilcox_opls_mean_identify_target_4.csv", file, fixed = TRUE)
 if (length(dd) > 0) {
   errm <- ""
-  data <- read.csv("DMC_wilcox_opls_mean_identify_target.csv")
+  data <- read.csv("DMC_wilcox_opls_mean_identify_target_4.csv")
   dat <- data[1:20, c("name", "Group", "general.name", "gene.name", "gene.function", "unport.ID", "genecard.ID")]
   kable(dat)
 } else {
@@ -264,10 +264,10 @@ if (length(dd) > 0) {
 ### Enzyme (Top 20)
 ```{r echo=FALSE,warning=FALSE}
 file <- list.files()
-dd <- grep("DMC_wilcox_opls_mean_identify_enzyme.csv", file, fixed = TRUE)
+dd <- grep("DMC_wilcox_opls_mean_identify_enzyme_4.csv", file, fixed = TRUE)
 if (length(dd) > 0) {
   errm <- ""
-  data <- read.csv("DMC_wilcox_opls_mean_identify_enzyme.csv")
+  data <- read.csv("DMC_wilcox_opls_mean_identify_enzyme_4.csv")
   dat <- data[1:20, c("name.x", "Group", "general.name", "ECID", "name.y")]
   colnames(dat) <- c("name", "Group", "general.name", "ECID", "name")
   kable(dat)
@@ -278,8 +278,8 @@ if (length(dd) > 0) {
 
 ## {-}
 <b>`r errm`</b>
-<a href="DMC_wilcox_opls_mean_identify_target.csv">Download data of target protein</a><br>
+<a href="DMC_wilcox_opls_mean_identify_target_4.csv">Download data of target protein</a><br>
 <b>`r errm`</b>
-<a href="DMC_wilcox_opls_mean_identify_enzyme.csv">Download data of enzyme protein</a>
+<a href="DMC_wilcox_opls_mean_identify_enzyme_4.csv">Download data of enzyme protein</a>
 
 <br><br><br><br>

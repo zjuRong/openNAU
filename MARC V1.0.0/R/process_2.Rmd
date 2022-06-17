@@ -1,5 +1,5 @@
 ---
-title: "Process 2"
+title: "Process 2 (SVA)"
 date: "`r Sys.time()`"
 output:
   bookdown::html_document2:
@@ -162,14 +162,14 @@ if (length(dd) == 0) {
 # The metabolites matching in public database
 
 
-## The information for differential metabolites
+## The information for differential metabolites (Top 50)
 ```{r echo=FALSE}
 file <- list.files()
 
 dd <- grep("DMC_wilcox_opls_mean_2.csv", file, fixed = TRUE)
 if (length(dd) > 0) {
   peaks_mean <- read.csv("DMC_wilcox_opls_mean_2.csv", header = TRUE)
-  kable(peaks_mean[, 1:5])
+  kable(peaks_mean[1:50, 1:5])
 }
 ```
 
@@ -246,14 +246,14 @@ if (length(gplot) > 0) {
 
 ## The related target proteins of differential metabolites {.tabset}
 
-### Target protein
+### Target protein (Top 20)
 ```{r echo=FALSE,warning=FALSE}
 file <- list.files()
 dd <- grep("DMC_wilcox_opls_mean_identify_target_2.csv", file, fixed = TRUE)
 if (length(dd) > 0) {
   errm <- ""
   data <- read.csv("DMC_wilcox_opls_mean_identify_target_2.csv")
-  dat <- data[, c("name", "Group", "general.name", "gene.name", "gene.function", "unport.ID", "genecard.ID")]
+  dat <- data[1:20, c("name", "Group", "general.name", "gene.name", "gene.function", "unport.ID", "genecard.ID")]
   kable(dat)
 } else {
   errm <- "There is no data for results!"
@@ -261,14 +261,14 @@ if (length(dd) > 0) {
 ```
 
 
-### Enzyme
+### Enzyme (Top 20)
 ```{r echo=FALSE,warning=FALSE}
 file <- list.files()
 dd <- grep("DMC_wilcox_opls_mean_identify_enzyme_2.csv", file, fixed = TRUE)
 if (length(dd) > 0) {
   errm <- ""
   data <- read.csv("DMC_wilcox_opls_mean_identify_enzyme_2.csv")
-  dat <- data[, c("name.x", "Group", "general.name", "ECID", "name.y")]
+  dat <- data[1:20, c("name.x", "Group", "general.name", "ECID", "name.y")]
   colnames(dat) <- c("name", "Group", "general.name", "ECID", "name")
   kable(dat)
 } else {

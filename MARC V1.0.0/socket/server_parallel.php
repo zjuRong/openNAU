@@ -80,6 +80,15 @@ do{
 			case 'p3':
 			$status=exec_p($uid,"process_3.R",$conn);
 			break;
+			case 'p4':
+			$status=exec_p($uid,"process_4.R",$conn);
+			break;
+			case 'p5':
+			$status=exec_p($uid,"process_5.R",$conn);
+			break;
+			case 'p6':
+			$status=exec_p($uid,"process_6.R",$conn);
+			break;
 			}
 
 		if(!$status){

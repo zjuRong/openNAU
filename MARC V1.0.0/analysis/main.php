@@ -176,20 +176,22 @@ if(is_dir($dir))
 <p>Data analysis</p>
 <input type="button" value="Normalization 1" onClick="showMG('norm')" class=" btn btn-large btn-info"  />
 <input type="button" value="Normalization 2" onClick="showMG('norm1')" class=" btn btn-large btn-info"  /> 
-<input type="button" value="Process 1" onClick="showMG('p1')" class=" btn btn-large btn-info"  />
-<input type="button" value="Process 2" onClick="showMG('p2')" class=" btn btn-large btn-info"  />
-<input type="button" value="Process 3" onClick="showMG('p3')" class=" btn btn-large btn-info"  />
+<input type="button" value="Zscore" onClick="showMG('p1')" class=" btn btn-large btn-info"  />
+<input type="button" value="SVA" onClick="showMG('p2')" class=" btn btn-large btn-info"  />
+<input type="button" value="LOESS" onClick="showMG('p3')" class=" btn btn-large btn-info"  />
+<input type="button" value="Spoly3" onClick="showMG('p4')" class=" btn btn-large btn-info"  />
+<input type="button" value="Spoly4" onClick="showMG('p5')" class=" btn btn-large btn-info"  />
 <div id="loading" align="center" style="display:none"><img src="../imges/loading.gif" width="400" height="300" /></div>
 </div>
 
 <div  class="panel panel-default" style="border:#999 solid 1px; text-indent:10px; margin-top:20px;">
 <p>Analysis report:</p>
+<div class="panel panel-default">
 <?php
 $file = "../data/raw_web/".$uid."/normalize.html";
 if(file_exists($file))
 {?>
-<a target="new" id="norm" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/normalize.html"  style="display:block; width:200px;">Normalization 1</a>
-<hr>
+<a target="new" id="norm" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/normalize.html"  style="display:inline-block; width:200px;">Normalization 1</a>
 <?php
 }
 else
@@ -200,54 +202,79 @@ else
 $file = "../data/raw_web/".$uid."/normalize_1.html";
 if(file_exists($file))
 {?>
-<a target="new" id="norm1" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/normalize_1.html"  style="display:block; width:200px;">Normalization 2</a>
-<hr>
+<a target="new" id="norm1" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/normalize_1.html"  style="display:inline-block; width:200px;">Normalization 2</a>
+
 <?php
 }
 else
 {?>
-   <a target="new" id="norm1" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/normalize_1.html"  style="display:none; width:200px;">Normalization 2</a>
+   <a target="new" id="norm1" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/normalize_1.html"  style="display:none; width:200px;">Normalization 2</a>
  <?php }?> 
- 
+ </div>
+ <hr>
 <?php
 $file = "../data/raw_web/".$uid."/process_1.html";
 if(file_exists($file))
 {?>
-<a target="new" id="p1" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/process_1.html" style="display:block; width:200px;" >Process 1</a>
+<a target="new" id="p1" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_1.html" style="display:inline-block; width:200px;" >Analysis results based on Z score</a>
 <hr>
 <?php
 }
 else
 {?>
-<a target="new" id="p1" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/process_1.html" style="display:none; width:200px;" >Process 1</a>
+<a target="new" id="p1" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_1.html" style="display:none; width:200px;" >Analysis results based on Z score</a>
  <?php }?>
 
  <?php
 $file = "../data/raw_web/".$uid."/process_2.html";
 if(file_exists($file))
 {?>
-<a target="new" id="p2" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/process_2.html" style="display:block; width:200px;" >Process 2</a>
+<a target="new" id="p2" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_2.html" style="display:inline-block; width:200px;" >Analysis results based on SVA</a>
 <hr>
 <?php
 }
 else
 {?>
-<a target="new" id="p2" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/process_2.html" style="display:none; width:200px;" >Process 2</a>
+<a target="new" id="p2" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_2.html" style="display:none; width:200px;" >Analysis results based on SVA</a>
 
  <?php }?> 
 <?php
 $file = "../data/raw_web/".$uid."/process_3.html";
 if(file_exists($file))
 {?>
-<a target="new" id="p3" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/process_3.html" style="display:block; width:200px;" >Process 3</a>
+<a target="new" id="p3" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_3.html" style="display:inline-block; width:200px;" >Analysis results based on LOESS</a>
 <hr>
 <?php
 }
 else
 {?>
-<a target="new" id="p3" class=" btn btn-large btn-warning" href="../data/raw_web/<?php echo $uid;?>/process_3.html" style="display:none; width:200px;" >Process 3</a>
+<a target="new" id="p3" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_3.html" style="display:none; width:200px;" >Analysis results based on LOESS</a>
  <?php }?>
 
+<?php
+$file = "../data/raw_web/".$uid."/process_4.html";
+if(file_exists($file))
+{?>
+<a target="new" id="p4" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_3.html" style="display:inline-block; width:200px;" >Analysis results based on Spoly3</a>
+<hr>
+<?php
+}
+else
+{?>
+<a target="new" id="p4" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_3.html" style="display:none; width:200px;" >Analysis results based on Spoly3</a>
+ <?php }?>
+ <?php
+$file = "../data/raw_web/".$uid."/process_5.html";
+if(file_exists($file))
+{?>
+<a target="new" id="p5" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_3.html" style="display:inline-block; width:200px;" >Analysis results based on Spoly4</a>
+<hr>
+<?php
+}
+else
+{?>
+<a target="new" id="p5" class=" btn btn-large btn-success" href="../data/raw_web/<?php echo $uid;?>/process_3.html" style="display:none; width:200px;" >Analysis results based on Spoly4</a>
+ <?php }?>
 </div>
 
 
