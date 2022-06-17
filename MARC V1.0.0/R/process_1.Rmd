@@ -34,7 +34,7 @@ id <- id[length(id)]
 
 # The PCA plot for peak data by grouping
 
-```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center',fig.height=7,fig.width=10}
 data_raw_QC <- read.csv("sample_mass_RC_QC_normalize_zscore.csv")
 data_raw_pca <- data_raw_QC[, -c(1:4)]
 data_raw_pca <- apply(data_raw_pca, 2, as.numeric)
