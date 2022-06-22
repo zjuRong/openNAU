@@ -116,7 +116,7 @@ dd <- as.matrix(data_normalize[, -c(1:4)])
 dd <- apply(dd, 2, as.numeric)
 rownames(dd) <- as.character(data_normalize[, 1])
 colnames(dd) <- colnames(data_normalize)[-c(1:4)]
-batch <- as.numeric(data_normalize[, "pici"])
+batch <- as.character(data_normalize[, "pici"])
 clinical <- data_normalize[, c(1:4)]
 # mod = model.matrix(~as.factor(group),data=clinical)
 combat_edata <- ComBat(dat = t(dd), batch = batch, mod = NULL)

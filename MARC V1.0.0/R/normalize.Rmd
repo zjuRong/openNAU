@@ -62,7 +62,7 @@ p + stat_boxplot(geom = "errorbar", width = 0.6, aes(x = group, y = Intensity, g
 
 ## The PCA plot for raw mass intensity data by grouping
 
-```{r echo=FALSE,message=FALSE, warning=FALSE, fig.align='center'}
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE}
 data_raw_QC <- read.csv("data_raw_pca_QC.csv")
 data_raw_pca <- data_raw_QC[, -c(1:4)]
 data_raw_pca <- apply(data_raw_pca, 2, as.numeric)
