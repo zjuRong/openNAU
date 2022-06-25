@@ -151,7 +151,7 @@ if (length(dd) == 0) {
 <b>`r errm`</b>
 
 
-# The differrntial metabolites Venn diagram
+# The differential metabolites Venn diagram
 
 ```{r echo=FALSE, fig.align='center', warning=FALSE,split=TRUE, fig.height=7,fig.width=10}
 file <- list.files()
@@ -191,6 +191,7 @@ if (length(dd) == 0) {
 
 
 ## The information for differential metabolites (Top 50)
+<a href="DMC_wilcox_opls_mean_2.csv">Download data of differential metabolites</a>
 ```{r echo=FALSE}
 file <- list.files()
 
@@ -200,6 +201,7 @@ if (length(dd) > 0) {
   kable(peaks_mean[1:50, 1:5])
 }
 ```
+
 
 
 ## The identification of differential metabolites
@@ -225,7 +227,7 @@ if (length(dd) > 0) {
   errm <- "*************No data for our results !***********"
 }
 ```
-<a href="DMC_wilcox_opls_mean_identify_2.csv">Download data of all database</a>
+<a href="DMC_wilcox_opls_mean_identify_2.csv">Download data of all database</a><br>
 
 
 <b>`r errm`</b>

@@ -151,7 +151,7 @@ if (length(dd) == 0) {
 <b>`r errm`</b>
 
 
-# The differrntial metabolites Venn diagram
+# The differential metabolites Venn diagram
 
 ```{r echo=FALSE, fig.align='center', warning=FALSE,split=TRUE, fig.height=7,fig.width=10}
 file <- list.files()
@@ -191,6 +191,8 @@ if (length(dd) == 0) {
 
 
 ## The information for differential metabolites (Top 50)
+<a href="DMC_wilcox_opls_mean_4.csv">Download data of differential metabolites</a>
+
 ```{r echo=FALSE}
 file <- list.files()
 
