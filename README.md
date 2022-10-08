@@ -13,7 +13,7 @@ ___
 ## Document 
 ___
 * [Document](Document.pdf)
-* Test data in [MetaQC V1.0.0/data/raw_data/test/]
+* Test data in [MetaQC V1.0.0/data/raw_data/test/](MetaQC%20V1.0.0/data/raw_data/test)
 
 ## Authors
 ___
